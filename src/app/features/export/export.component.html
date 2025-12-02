@@ -1,0 +1,212 @@
+<div class="export-container">
+    <div class="page-header">
+        <h1>Exportar</h1>
+        <p>Exporta tus simulaciones en diferentes formatos</p>
+    </div>
+
+    <div class="export-content-wrapper">
+
+        <div class="card export-card quick-export-card">
+            <div class="card-header">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Exportación rápida</h3>
+                    <p>Exporta la simulación más reciente de forma inmediata</p>
+                </div>
+            </div>
+
+            <div class="export-action-content" *ngIf="latestSimulation; else noSimulation">
+                <div class="simulation-preview">
+                    <div class="sim-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="12" y1="18" x2="12" y2="12"></line>
+                            <line x1="9" y1="15" x2="15" y2="15"></line>
+                        </svg>
+                    </div>
+                    <div class="sim-details">
+                        <h4>{{ latestSimulation.name }}</h4>
+                        <p>{{ latestSimulation.currency }} {{ latestSimulation.loanAmount | number:'1.2-2' }}</p>
+                        <span class="date">{{ latestSimulation.createdAt | date:'mediumDate' }}</span>
+                    </div>
+                </div>
+                <button class="btn-primary" (click)="quickExport()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Exportar ahora
+                </button>
+            </div>
+
+            <ng-template #noSimulation>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <h4>No hay simulaciones completas</h4>
+                    <p>Completa una simulación para poder exportarla</p>
+                </div>
+            </ng-template>
+        </div>
+
+
+        <div class="card export-card batch-export-card">
+            <div class="card-header">
+                <div class="icon-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                        <rect x="1" y="3" width="22" height="5"></rect>
+                        <line x1="10" y1="12" x2="14" y2="12"></line>
+                    </svg>
+                </div>
+                <div>
+                    <h3>Exportación en lote</h3>
+                    <p>Selecciona múltiples simulaciones para exportar en un archivo ZIP</p>
+                </div>
+            </div>
+
+            <div class="batch-content" *ngIf="simulations.length > 0; else noBatchSims">
+                <div class="batch-controls">
+                    <label class="checkbox-container">
+                        <input type="checkbox" [checked]="isAllSelected()" (change)="toggleAll($event)">
+                        <span class="checkmark"></span>
+                        Seleccionar todo
+                    </label>
+                    <button class="btn-secondary" (click)="batchExport()" [disabled]="selectedSimulations.size === 0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Descargar ZIP ({{ selectedSimulations.size }})
+                    </button>
+                </div>
+
+                <div class="simulations-list">
+                    <div class="simulation-item" *ngFor="let sim of simulations">
+                        <label class="checkbox-container">
+                            <input type="checkbox" [checked]="sim.id && selectedSimulations.has(sim.id)"
+                                (change)="toggleSelection(sim.id)">
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="sim-info">
+                            <span class="sim-name">{{ sim.name }}</span>
+                            <span class="sim-meta">{{ sim.currency }} {{ sim.loanAmount | number:'1.0-0' }} • {{
+                                sim.createdAt | date:'shortDate' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ng-template #noBatchSims>
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                            <rect x="1" y="3" width="22" height="5"></rect>
+                            <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                    </div>
+                    <h4>No hay simulaciones para exportar en lote</h4>
+                    <p>Completa al menos una simulación para usar esta función</p>
+                </div>
+            </ng-template>
+        </div>
+
+
+        <div class="info-grid">
+
+            <div class="card info-card">
+                <h3>Estadísticas</h3>
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <span>Total simulaciones:</span>
+                        <span class="value">{{ stats.total }}</span>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="stat-item">
+                        <span>Moneda PEN:</span>
+                        <span class="value">{{ stats.pen }}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Moneda USD:</span>
+                        <span class="value">{{ stats.usd }}</span>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card info-card">
+                <h3>Formatos disponibles</h3>
+                <div class="formats-list">
+                    <div class="format-item">
+                        <div class="format-icon excel">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>Excel</h4>
+                            <p>Perfecto para análisis adicional.</p>
+                        </div>
+                    </div>
+
+                    <div class="format-item">
+                        <div class="format-icon zip">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                                <rect x="1" y="3" width="22" height="5"></rect>
+                                <line x1="10" y1="12" x2="14" y2="12"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h4>ZIP</h4>
+                            <p>Agrupa múltiples simulaciones.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="card info-card">
+                <h3>Consejos</h3>
+                <ul class="tips-list">
+                    <li>Excel permite análisis y modificaciones</li>
+                    <li>ZIP es útil para enviar múltiples simulaciones</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

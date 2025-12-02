@@ -1,0 +1,197 @@
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    }
+}
+
+// Summary Cards
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+
+    .summary-card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 1.5rem;
+        border-left: 4px solid transparent;
+
+        &:nth-child(1) {
+            border-left-color: #81b1b6;
+        }
+
+        &:nth-child(2) {
+            border-left-color: #f59e0b;
+        }
+
+        &:nth-child(3) {
+            border-left-color: #10b981;
+        }
+
+        &:nth-child(4) {
+            border-left-color: #6366f1;
+        }
+
+        .label {
+            font-size: 0.875rem;
+            color: #64748b;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+    }
+}
+
+// Indicators
+.indicators-card {
+    h3 {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1e293b;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .indicators-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+
+        .indicator {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+
+            .label {
+                font-size: 0.875rem;
+                color: #64748b;
+            }
+
+            .value {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: #334155;
+            }
+
+            &.total {
+                .value {
+                    color: #ef4444; // Red for cost
+                }
+            }
+        }
+    }
+}
+
+// Table
+.table-card {
+    overflow: hidden; // For rounded corners on table
+    padding: 0; // Remove padding to let table fill
+
+    .card-header {
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #e2e8f0;
+        background-color: #f8fafc;
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 0;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+
+        th,
+        td {
+            padding: 1rem 1.5rem;
+            text-align: right;
+            white-space: nowrap;
+
+            &:first-child {
+                text-align: left;
+                padding-left: 1.5rem;
+            }
+
+            &:last-child {
+                padding-right: 1.5rem;
+            }
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f5f9;
+            transition: background-color 0.1s;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover {
+                background-color: #f8fafc;
+            }
+        }
+
+        td {
+            color: #334155;
+
+            strong {
+                color: #1e293b;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

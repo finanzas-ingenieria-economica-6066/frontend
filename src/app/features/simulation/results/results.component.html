@@ -1,0 +1,90 @@
+<div class="results-container" *ngIf="result">
+
+    <div class="summary-grid">
+        <div class="card summary-card">
+            <span class="label">Cuota Aproximada</span>
+            <span class="value highlight">{{ result.summary.approxInstallment | number:'1.2-2' }}</span>
+            <span class="sub-label">{{ result.summary.currency === 'PEN' ? 'Soles' : 'Dólares' }}</span>
+        </div>
+        <div class="card summary-card">
+            <span class="label">TCEA</span>
+            <span class="value">{{ result.summary.tcea | number:'1.2-2' }}%</span>
+        </div>
+        <div class="card summary-card">
+            <span class="label">VAN</span>
+            <span class="value">{{ result.summary.van | number:'1.2-2' }}</span>
+        </div>
+        <div class="card summary-card">
+            <span class="label">TIR</span>
+            <span class="value">{{ result.summary.tir | number:'1.2-2' }}%</span>
+        </div>
+    </div>
+
+
+    <div class="card indicators-card">
+        <h3>Indicadores de Costo</h3>
+        <div class="indicators-grid">
+            <div class="indicator">
+                <span class="label">Total Intereses</span>
+                <span class="value">{{ result.indicators.totalInterests | number:'1.2-2' }}</span>
+            </div>
+            <div class="indicator">
+                <span class="label">Total Seguros</span>
+                <span class="value">{{ result.indicators.totalInsurance | number:'1.2-2' }}</span>
+            </div>
+            <div class="indicator">
+                <span class="label">Total Comisiones</span>
+                <span class="value">{{ result.indicators.totalCommissions | number:'1.2-2' }}</span>
+            </div>
+            <div class="indicator total">
+                <span class="label">Costo Total del Crédito</span>
+                <span class="value">{{ result.indicators.totalCost | number:'1.2-2' }}</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="card table-card">
+        <div class="card-header">
+            <h3>Tabla de Amortización</h3>
+            <button class="btn btn-outline btn-sm" (click)="exportToExcel()">
+                Exportar Excel
+            </button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Fecha</th>
+                        <th>Saldo Inicial</th>
+                        <th>Interés</th>
+                        <th>Amortización</th>
+                        <th>Seguro</th>
+                        <th>Comisión</th>
+                        <th>Cuota Total</th>
+                        <th>Saldo Final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let row of result.table">
+                        <td>{{ row.period }}</td>
+                        <td>{{ row.date }}</td>
+                        <td>{{ row.initialBalance | number:'1.2-2' }}</td>
+                        <td>{{ row.interest | number:'1.2-2' }}</td>
+                        <td>{{ row.amortization | number:'1.2-2' }}</td>
+                        <td>{{ row.insurance | number:'1.2-2' }}</td>
+                        <td>{{ row.commissions | number:'1.2-2' }}</td>
+                        <td><strong>{{ row.totalInstallment | number:'1.2-2' }}</strong></td>
+                        <td>{{ row.finalBalance | number:'1.2-2' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!result" class="no-results">
+    <p>No hay resultados para mostrar.</p>
+</div>

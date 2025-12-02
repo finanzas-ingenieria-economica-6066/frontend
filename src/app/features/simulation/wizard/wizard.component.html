@@ -1,0 +1,343 @@
+<div class="wizard-container">
+    <div class="wizard-header">
+        <h1>Nueva simulación</h1>
+        <p>Configura los parámetros de tu simulación de crédito hipotecario</p>
+    </div>
+
+    <div class="wizard-card">
+        <!-- Steps Indicator -->
+        <div class="steps-indicator">
+            <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <span>1. Datos</span>
+            </div>
+
+            <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                <span>2. Tasas</span>
+            </div>
+
+            <div class="step" [class.active]="currentStep === 3" [class.completed]="currentStep > 3">
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <span>3. Gracia y cargos</span>
+            </div>
+
+            <div class="step" [class.active]="currentStep === 4">
+                <div class="step-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                </div>
+                <span>4. Resumen</span>
+            </div>
+        </div>
+
+        <form [formGroup]="simulationForm">
+            <!-- Step 1: Datos -->
+            <div class="step-content" *ngIf="currentStep === 1">
+                <h2 class="step-title">Datos básicos del crédito</h2>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Nombre de la simulación *</label>
+                        <input type="text" formControlName="name" placeholder="Ej: Depto USD 240k"
+                            [class.error]="isFieldInvalid('name')">
+                        <span class="error-msg" *ngIf="isFieldInvalid('name')">Requerido</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Moneda *</label>
+                        <select formControlName="currency" [class.error]="isFieldInvalid('currency')">
+                            <option value="PEN">Soles (PEN)</option>
+                            <option value="USD">Dólares (USD)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Monto del crédito (M) *</label>
+                        <input type="number" formControlName="loanAmount" placeholder="0"
+                            [class.error]="isFieldInvalid('loanAmount')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('loanAmount') && simulationForm.get('loanAmount')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('loanAmount')?.hasError('min')">Mínimo
+                            1,000</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('loanAmount')?.hasError('max')">Máximo
+                            5,000,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>BBP (Monto) * <span class="info-icon" title="Bono del Buen Pagador">i</span></label>
+                        <input type="number" formControlName="bbpAmount" placeholder="0"
+                            [class.error]="isFieldInvalid('bbpAmount')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('bbpAmount') && simulationForm.get('bbpAmount')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('bbpAmount')?.hasError('min')">Mínimo 0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('bbpAmount')?.hasError('max')">Máximo
+                            100,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cuota inicial (%) *</label>
+                        <input type="number" formControlName="initialFeePercentage" placeholder="10"
+                            [class.error]="isFieldInvalid('initialFeePercentage')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('initialFeePercentage') && simulationForm.get('initialFeePercentage')?.hasError('required')">Requerido</span>
+                        <span class="error-msg"
+                            *ngIf="simulationForm.get('initialFeePercentage')?.hasError('min')">Mínimo
+                            0%</span>
+                        <span class="error-msg"
+                            *ngIf="simulationForm.get('initialFeePercentage')?.hasError('max')">Máximo
+                            90%</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cuota inicial (Monto) *</label>
+                        <input type="number" formControlName="initialFeeAmount" placeholder="0"
+                            [class.error]="isFieldInvalid('initialFeeAmount')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('initialFeeAmount') && simulationForm.get('initialFeeAmount')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('initialFeeAmount')?.hasError('min')">Mínimo
+                            0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('initialFeeAmount')?.hasError('max')">Máximo
+                            5,000,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tipo de Cambio *</label>
+                        <input type="number" formControlName="exchangeRate" placeholder="3.75"
+                            [class.error]="isFieldInvalid('exchangeRate')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('exchangeRate') && simulationForm.get('exchangeRate')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('exchangeRate')?.hasError('min')">Mínimo
+                            0.1</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('exchangeRate')?.hasError('max')">Máximo
+                            10</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de desembolso</label>
+                        <input type="date" formControlName="disbursementDate"
+                            [class.error]="isFieldInvalid('disbursementDate')">
+                        <span class="error-msg" *ngIf="isFieldInvalid('disbursementDate')">Requerido</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Tasas -->
+            <div class="step-content" *ngIf="currentStep === 2">
+                <h2 class="step-title">Configuración de Tasas y Plazos</h2>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tipo de Tasa *</label>
+                        <select formControlName="interestType">
+                            <option value="EFFECTIVE">Efectiva</option>
+                            <option value="NOMINAL">Nominal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tasa Anual (%) *</label>
+                        <input type="number" formControlName="annualRate" placeholder="Ej: 8.5"
+                            [class.error]="isFieldInvalid('annualRate')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('annualRate') && simulationForm.get('annualRate')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('annualRate')?.hasError('min')">Mínimo
+                            0.1%</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('annualRate')?.hasError('max')">Máximo
+                            100%</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Frecuencia de pago *</label>
+                        <select formControlName="paymentFrequency">
+                            <option value="MONTHLY">Mensual</option>
+                            <option value="QUARTERLY">Trimestral</option>
+                            <option value="SEMI_ANNUALLY">Semestral</option>
+                            <option value="ANNUALLY">Anual</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Plazo total (meses) *</label>
+                        <input type="number" formControlName="totalMonths" placeholder="Ej: 120"
+                            [class.error]="isFieldInvalid('totalMonths')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('totalMonths') && simulationForm.get('totalMonths')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('totalMonths')?.hasError('min')">Mínimo 6
+                            meses</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('totalMonths')?.hasError('max')">Máximo 360
+                            meses (30 años)</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Periodo de capitalización *</label>
+                        <select formControlName="capitalizationPeriod">
+                            <option value="DAILY">Diaria</option>
+                            <option value="MONTHLY">Mensual</option>
+                            <option value="QUARTERLY">Trimestral</option>
+                            <option value="SEMI_ANNUALLY">Semestral</option>
+                            <option value="ANNUALLY">Anual</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Gracia y Cargos -->
+            <div class="step-content" *ngIf="currentStep === 3">
+                <h2 class="step-title">Periodos de Gracia y Seguros</h2>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tipo de gracia *</label>
+                        <select formControlName="gracePeriodType">
+                            <option value="NONE">Sin gracia</option>
+                            <option value="PARTIAL">Parcial</option>
+                            <option value="TOTAL">Total</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Meses de gracia</label>
+                        <input type="number" formControlName="gracePeriodMonths" placeholder="0"
+                            [class.error]="isFieldInvalid('gracePeriodMonths')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('gracePeriodMonths') && simulationForm.get('gracePeriodMonths')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('gracePeriodMonths')?.hasError('min')">Mínimo
+                            0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('gracePeriodMonths')?.hasError('max')">Máximo
+                            24 meses</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Seguro desgravamen (%) *</label>
+                        <input type="number" formControlName="insurancePercentage" placeholder="0.05"
+                            [class.error]="isFieldInvalid('insurancePercentage')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('insurancePercentage') && simulationForm.get('insurancePercentage')?.hasError('required')">Requerido</span>
+                        <span class="error-msg"
+                            *ngIf="simulationForm.get('insurancePercentage')?.hasError('min')">Mínimo
+                            0%</span>
+                        <span class="error-msg"
+                            *ngIf="simulationForm.get('insurancePercentage')?.hasError('max')">Máximo
+                            5%</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Seguro Riesgo (Monto Fijo) *</label>
+                        <input type="number" formControlName="fixedInsurance" placeholder="0"
+                            [class.error]="isFieldInvalid('fixedInsurance')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('fixedInsurance') && simulationForm.get('fixedInsurance')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('fixedInsurance')?.hasError('min')">Mínimo
+                            0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('fixedInsurance')?.hasError('max')">Máximo
+                            1,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comisión Inicial</label>
+                        <input type="number" formControlName="initialCommission" placeholder="0"
+                            [class.error]="isFieldInvalid('initialCommission')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('initialCommission') && simulationForm.get('initialCommission')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('initialCommission')?.hasError('min')">Mínimo
+                            0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('initialCommission')?.hasError('max')">Máximo
+                            10,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comisión Periódica</label>
+                        <input type="number" formControlName="periodicCommission" placeholder="0"
+                            [class.error]="isFieldInvalid('periodicCommission')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('periodicCommission') && simulationForm.get('periodicCommission')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('periodicCommission')?.hasError('min')">Mínimo
+                            0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('periodicCommission')?.hasError('max')">Máximo
+                            1,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comisión Final</label>
+                        <input type="number" formControlName="finalCommission" placeholder="0"
+                            [class.error]="isFieldInvalid('finalCommission')">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('finalCommission') && simulationForm.get('finalCommission')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('finalCommission')?.hasError('min')">Mínimo
+                            0</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('finalCommission')?.hasError('max')">Máximo
+                            10,000</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tasa de descuento (VAN) %</label>
+                        <input type="number" formControlName="discountRate" placeholder="10">
+                        <span class="error-msg"
+                            *ngIf="isFieldInvalid('discountRate') && simulationForm.get('discountRate')?.hasError('required')">Requerido</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('discountRate')?.hasError('min')">Mínimo
+                            0%</span>
+                        <span class="error-msg" *ngIf="simulationForm.get('discountRate')?.hasError('max')">Máximo
+                            100%</span>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Step 4: Resumen (Results) -->
+        <div class="step-content" *ngIf="currentStep === 4">
+            <h2 class="step-title">Resultados de la Simulación</h2>
+            <div *ngIf="isLoading" class="loading-state">
+                <div class="spinner"></div>
+                <p>Calculando simulación...</p>
+                <small>Esto puede tomar unos segundos</small>
+            </div>
+            <div *ngIf="errorMessage" class="error-state">
+                <p>{{ errorMessage }}</p>
+            </div>
+            <app-results *ngIf="!isLoading && !errorMessage" [result]="simulationResult"
+                [data]="simulationData"></app-results>
+        </div>
+
+        <!-- Navigation Buttons -->
+        <div class="wizard-actions">
+            <button class="btn btn-outline" *ngIf="currentStep > 1" (click)="prevStep()"
+                [disabled]="isLoading">Atrás</button>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" (click)="nextStep()" [disabled]="!validateStep(currentStep) || isLoading">
+                <div class="btn-spinner" *ngIf="isLoading"></div>
+                <span *ngIf="!isLoading">{{ currentStep === 4 ? 'Guardar y Finalizar' : 'Siguiente' }}</span>
+                <span *ngIf="isLoading">Procesando...</span>
+                <svg *ngIf="!isLoading" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-left: 0.5rem;">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>

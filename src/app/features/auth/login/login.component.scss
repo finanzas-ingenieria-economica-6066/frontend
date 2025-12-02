@@ -1,0 +1,31 @@
+@import '../register/register.component.scss';
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+
+    .forgot-password {
+        font-size: 0.875rem;
+        color: var(--primary-color);
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.error-msg {
+    color: var(--danger-color);
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+input.invalid {
+    border-color: var(--danger-color);
+
+    &:focus {
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
+    }
+}

@@ -1,0 +1,59 @@
+<nav class="navbar">
+    <div class="navbar-container">
+        <div class="navbar-brand">
+            <img src="assets/logo.png" alt="Logo" style="height: 32px; margin-right: 12px;">
+            <span class="brand-text">CreditFlow BBP</span>
+        </div>
+
+        <button class="hamburger-btn" (click)="toggleMobileMenu()" [class.active]="isMobileMenuOpen">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="navbar-menu" [class.active]="isMobileMenuOpen">
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Escritorio</a>
+            <a routerLink="/simulations" routerLinkActive="active" class="nav-link"
+                (click)="closeMenu()">Simulaciones</a>
+            <a routerLink="/graficos" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Gráficos</a>
+            <a routerLink="/comparator" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Comparador</a>
+            <a routerLink="/export" routerLinkActive="active" class="nav-link" (click)="closeMenu()">Exportar</a>
+        </div>
+
+        <div class="navbar-actions">
+            <div class="user-profile-container" (click)="toggleMenu()" [class.active]="isMenuOpen"
+                *ngIf="user$ | async as user">
+                <div class="user-profile">
+                    <div class="avatar">{{ user.fullName ? user.fullName.charAt(0).toUpperCase() : 'U' }}</div>
+                    <span class="username">{{ user.fullName || 'Usuario' }}</span>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <div class="dropdown-menu" *ngIf="isMenuOpen">
+                    <a routerLink="/help" class="dropdown-item" (click)="closeMenu()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        Ayuda
+                    </a>
+                    <button class="dropdown-item" (click)="logout()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        Cerrar sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>

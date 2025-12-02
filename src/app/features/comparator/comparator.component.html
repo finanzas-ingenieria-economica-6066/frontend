@@ -1,0 +1,147 @@
+<div class="comparator-container">
+    <div class="page-header">
+        <h1>Comparador de Simulaciones</h1>
+        <p>Selecciona hasta 3 simulaciones para comparar sus indicadores y encontrar la mejor opción.</p>
+    </div>
+
+    <!-- Selection Grid -->
+    <div class="mb-12">
+        <h2 class="section-title">1. Selecciona tus simulaciones</h2>
+
+        <div class="selection-grid">
+            <div *ngFor="let sim of simulations" (click)="toggleSelection(sim.id)" class="selection-card"
+                [class.selected]="isSelected(sim.id)">
+
+                <div class="card-header">
+                    <h3>{{sim.name}}</h3>
+                    <div class="check-icon">
+                        <svg *ngIf="isSelected(sim.id)" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="simulations.length === 0 && !isLoading" class="empty-selection">
+                No tienes simulaciones guardadas para comparar.
+            </div>
+        </div>
+
+        <!-- Comparison Section -->
+        <div *ngIf="comparisonItems.length >= 2" class="animate-fade-in">
+            <h2 class="section-title">2. Análisis Comparativo</h2>
+
+            <!-- Winner Banner -->
+            <div *ngIf="bestItem" class="winner-banner">
+                <div class="winner-icon">
+                    <svg width="32" height="32" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="winner-content">
+                    <h3>Mejor Opción: {{bestItem.simulation.name}}</h3>
+                    <p>
+                        Esta simulación ofrece la <strong>TCEA más baja ({{bestItem.result.summary.tcea |
+                            number:'1.2-2'}}%)</strong>,
+                        lo que representa el menor costo financiero total para tu préstamo.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Comparison Table -->
+            <div class="comparison-table-container overflow-x-auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="sticky-col">Indicador</th>
+                            <th *ngFor="let item of comparisonItems"
+                                [class.best-header]="item.simulation.id === bestOptionId">
+                                {{item.simulation.name}}
+                                <span *ngIf="item.simulation.id === bestOptionId" class="badge-best">Mejor</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Basic Info -->
+                        <tr>
+                            <td class="sticky-col">Monto del Préstamo</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.currency}} {{item.result.summary.amount | number:'1.2-2'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col">Plazo</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.term}} meses
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col">Tasa Efectiva Anual (TEA)</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.tea | number:'1.2-2'}}%
+                            </td>
+                        </tr>
+
+                        <!-- Key Indicators -->
+                        <tr class="highlight-row">
+                            <td class="sticky-col">Cuota Mensual (Aprox)</td>
+                            <td *ngFor="let item of comparisonItems" class="font-bold"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.currency}} {{item.result.summary.approxInstallment |
+                                number:'1.2-2'}}
+                            </td>
+                        </tr>
+                        <tr class="highlight-row">
+                            <td class="sticky-col">TCEA (Costo Real)</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.highlight-text]="item.simulation.id === bestOptionId"
+                                [class.best-cell]="item.simulation.id === bestOptionId" class="font-bold">
+                                {{item.result.summary.tcea | number:'1.2-2'}}%
+                            </td>
+                        </tr>
+
+                        <!-- Advanced Metrics -->
+                        <tr>
+                            <td class="sticky-col">Total Intereses</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.currency}} {{item.result.indicators.totalInterests |
+                                number:'1.2-2'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col">Total Seguros</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.currency}} {{item.result.indicators.totalInsurance |
+                                number:'1.2-2'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col">VAN (Valor Actual Neto)</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.van | number:'1.2-2'}}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="sticky-col">TIR</td>
+                            <td *ngFor="let item of comparisonItems"
+                                [class.best-cell]="item.simulation.id === bestOptionId">
+                                {{item.result.summary.tir | number:'1.2-2'}}%
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div *ngIf="isLoading" class="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+    </div>

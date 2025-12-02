@@ -1,0 +1,116 @@
+<div class="details-container" *ngIf="simulation">
+    <div class="page-header">
+        <div class="header-content">
+            <button class="btn btn-text" routerLink="/simulations">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                Regresar
+            </button>
+        </div>
+    </div>
+
+    <div class="content-grid">
+
+        <h1>{{simulation.name}}</h1>
+        <div class="card params-card">
+            <h3>Parámetros del Crédito</h3>
+            <div class="params-list">
+                <div class="param-item">
+                    <span class="label">Monto del Préstamo</span>
+                    <span class="value">{{ simulation.currency }} {{ simulation.loanAmount | number:'1.2-2' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Capital Financiado</span>
+                    <span class="value">{{ simulation.currency }} {{ simulation.financedCapital | number:'1.2-2'
+                        }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Bono Buen Pagador</span>
+                    <span class="value">{{ simulation.currency }} {{ simulation.bbpAmount | number:'1.2-2' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Cuota Inicial</span>
+                    <!-- CORREGIDO: Usamos number y agregamos % manual -->
+                    <span class="value">{{ simulation.initialFeeAmount | number:'1.2-2' }} ({{
+                        simulation.initialFeePercentage | number:'1.2-2' }}%)</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Tasa de Interés</span>
+                    <!-- CORREGIDO: Usamos number y agregamos % manual -->
+                    <span class="value">{{ simulation.annualRate | number:'1.2-2' }}% {{ simulation.interestType ===
+                        'EFFECTIVE' ? 'Efectiva' : 'Nominal' }} Anual</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Periodo de Capitalización</span>
+                    <span class="value">{{ translatePeriod(simulation.capitalizationPeriod) }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Plazo</span>
+                    <span class="value">{{ simulation.totalMonths }} meses</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Frecuencia de Pago</span>
+                    <span class="value">{{ translateFrequency(simulation.paymentFrequency) }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Periodo de Gracia</span>
+                    <span class="value">{{ simulation.gracePeriodType !== 'NONE' ? (simulation.gracePeriodType ===
+                        'PARTIAL' ? 'Parcial' : 'Total') + ' (' + simulation.gracePeriodMonths + ' meses)' : 'Ninguno'
+                        }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Seguro Desgravamen</span>
+                    <!-- CORREGIDO: Usamos number y agregamos % manual -->
+                    <span class="value">{{ simulation.insurancePercentage | number:'1.2-2' }}%</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Seguro Fijo</span>
+                    <span class="value">{{ simulation.fixedInsurance | number:'1.2-2' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Comisión Inicial</span>
+                    <span class="value">{{ simulation.initialCommission | number:'1.2-2' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Comisión Periódica</span>
+                    <span class="value">{{ simulation.periodicCommission | number:'1.2-2' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Comisión Final</span>
+                    <span class="value">{{ simulation.finalCommission | number:'1.2-2' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Fecha de Desembolso</span>
+                    <span class="value">{{ simulation.disbursementDate | date:'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Tasa de Descuento</span>
+                    <!-- CORREGIDO: Usamos number y agregamos % manual -->
+                    <span class="value">{{ simulation.discountRate | number:'1.2-2' }}%</span>
+                </div>
+                <div class="param-item">
+                    <span class="label">Tipo de Cambio</span>
+                    <span class="value">{{ simulation.exchangeRate | number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+
+            <div class="results-section" *ngIf="simulationResult">
+                <app-results [result]="simulationResult" [data]="simulation"></app-results>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading-state" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Cargando simulación...</p>
+</div>
+
+<div class="error-state" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+    <button class="btn btn-primary" routerLink="/simulations">Volver a la lista</button>
+</div>

@@ -1,0 +1,99 @@
+<div class="action-bar">
+    <button class="btn btn-primary" routerLink="/simulation/new">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Nueva simulación
+    </button>
+</div>
+
+
+<div class="summary-grid">
+    <div class="card summary-card">
+        <span class="label">Total</span>
+        <span class="value">{{ simulations.length }}</span>
+    </div>
+
+    <div class="card summary-card">
+        <span class="label">Simulaciones en Soles</span>
+        <span class="value">{{ solesCount }}</span>
+    </div>
+
+    <div class="card summary-card">
+        <span class="label">Simulaciones en Dólares</span>
+        <span class="value">{{ dollarsCount }}</span>
+    </div>
+
+    <div class="card summary-card">
+        <span class="label">Capital promedio</span>
+        <span class="value">{{ averageCapital | number:'1.0-0' }}</span>
+    </div>
+</div>
+
+
+<div class="simulation-grid" *ngIf="simulations.length > 0; else emptyState">
+    <div class="simulation-card" *ngFor="let sim of simulations" (click)="viewSimulation(sim.id)">
+        <div class="card-header">
+            <span class="sim-date">{{ (sim.createdAt || sim.disbursementDate) | date:'mediumDate' }}</span>
+            <div class="actions">
+                <button class="btn-icon" (click)="duplicateSimulation(sim.id, $event)" title="Duplicar simulación">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                </button>
+                <button class="btn-delete" (click)="deleteSimulation(sim.id, $event)" title="Eliminar simulación">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 6h18"></path>
+                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <h3 class="sim-title">{{ sim.name }}</h3>
+            <div class="sim-amount">
+                <span class="currency">{{ sim.currency }}</span>
+                <span class="value">{{ sim.loanAmount | number:'1.0-0' }}</span>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>{{ sim.totalMonths }} meses de plazo</span>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #emptyState>
+    <div class="card list-card">
+        <div class="empty-state">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+            </div>
+            <h3>No hay simulaciones guardadas</h3>
+            <p>Crea tu primera simulación para empezar</p>
+            <button class="btn btn-primary" routerLink="/simulation/new">
+                + Nueva simulación
+            </button>
+        </div>
+    </div>
+</ng-template>
